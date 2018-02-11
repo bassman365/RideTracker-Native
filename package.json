@@ -1,0 +1,42 @@
+{
+  "name": "ridetracker-native",
+  "version": "1.0.0",
+  "description": "React Native Frontend for RideTracker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "android": "react-native run-android",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bassman365/RideTracker-Native.git"
+  },
+  "author": "bassman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bassman365/RideTracker-Native/issues"
+  },
+  "homepage": "https://github.com/bassman365/RideTracker-Native#readme",
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-native": "^0.52.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "^22.2.2",
+    "babel-preset-react-native": "^4.0.0",
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-react": "^7.6.0",
+    "jest": "^22.2.2",
+    "react-native": "^0.52.2",
+    "react-native-cli": "^2.0.1",
+    "react-native-swipeout": "^2.3.3",
+    "react-test-renderer": "^16.2.0",
+    "redux": "^3.7.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
