@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
-    "test": "jest"
+    "test": "jest",
+    "emulator": "emulator -avd Nexus_5X_API_27_x86 -gpu on"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
   "homepage": "https://github.com/bassman365/RideTracker-Native#readme",
   "dependencies": {
     "react": "^16.2.0",
-    "react-native": "^0.52.2"
+    "react-native": "^0.52.2",
+    "react-navigation": "^1.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
