@@ -3,6 +3,7 @@ import { StackNavigator } from 'react-navigation';
 import HomeScreen from './src/components/screens/homeScreen';
 import DetailsScreen from './src/components/screens/detailsScreen';
 import SignInScreen from './src/components/screens/signInScreen';
+import SignUpScreen from './src/components/screens/signUpScreen';
 
 const RootStack = StackNavigator(
   {
@@ -15,6 +16,9 @@ const RootStack = StackNavigator(
     SignIn: {
       screen: SignInScreen,
     },
+    SignUp: {
+      screen: SignUpScreen,
+    }
   },
   {
     initialRouteName: 'Home',

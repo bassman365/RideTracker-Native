@@ -6,27 +6,33 @@ import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
 
 type Props = {};
-export default class SignInScreen extends Component<Props> {
+export default class SignUpScreen extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
       emailText: '',
       passwordText: '',
+      passwordConfirmationText: '',
     };
 
-    this.onSignIn = this.onSignIn.bind(this);
+    this.onSignUp = this.onSignUp.bind(this);
+    this.onEmailConfirmationValidate = this.onPasswordConfirmationValidate.bind(this);
   }
 
-  onSignIn(email, password) {
+  onSignUp(email, password) {
     //try to get jwt
-    const response = signIn(email, password);
-    if(response.success) {
-      //if successfull store jwt with AsyncStorage
-      this.props.navigation.navigate(Screens.HOME);
-    } else {
-      //TODO display validation message
-      console.error(response.message);
-    }
+    // const response = signIn(email, password);
+    // if(response.success) {
+    //   //if successfull store jwt with AsyncStorage
+    //   this.props.navigation.navigate(Screens.HOME);
+    // } else {
+    //   //TODO display validation message
+    //   console.error(response.message);
+    // }
+  }
+
+  onPasswordConfirmationValidate(password, passwordConfirmationText) {
+
   }
 
   render() {
@@ -57,37 +63,47 @@ export default class SignInScreen extends Component<Props> {
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}
             />
           </View>
+          <View style={{ flex: 0.2 }} />
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <TextInput
+              onBlur={() => this.onPasswordConfirmationValidate(this.state.passwordText, this.state.passwordConfirmationText)}
+              onChangeText={(text) => this.setState({ passwordConfirmationText: text })}
+              placeholder="Confirm Password"
+              secureTextEntry
+              style={{ flex: 0.8, borderWidth: 0, height: 40 }}
+            />
+          </View>
         </View>
 
         <View style={{ flex: 2, flexDirection: 'column', justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
-              onPress={() => this.onSignIn(this.state.emailText, this.state.passwordText)}
+              onPress={() => this.props.navigation.navigate(Screens.HOME)}
               style={styles.button}
               testID="signInSubmitButton">
               <Text style={styles.buttonText}>
-                Sign In
+                Sign Up
               </Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ flex: 1 }}>
+        {/* <View style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <Text
-              onPress={() => this.props.navigation.navigate(Screens.SIGNUP)}
+              onPress={() => this.onSignUp(this.state.emailText, this.state.passwordText)}
               style={styles.linkText}>
               No Account yet? Sign up now.
             </Text>
           </View>
-        </View>
+        </View> */}
 
       </View>
     );
   }
 }
 
-SignInScreen.propTypes = {
+SignUpScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func
   }).isRequired
