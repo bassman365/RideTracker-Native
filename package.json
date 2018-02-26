@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
+    "open dev options": "adb shell input keyevent 82",
     "test": "jest",
     "emulator": "emulator -avd Nexus_5X_API_27_x86 -gpu on"
   },

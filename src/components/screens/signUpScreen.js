@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from '../../lib/styles';
-import { signIn } from '../../lib/api';
+import { signUp } from '../../lib/api';
 import Screens from '../../lib/screens';
 
 type Props = {};
@@ -20,15 +20,15 @@ export default class SignUpScreen extends Component<Props> {
   }
 
   onSignUp(email, password) {
-    //try to get jwt
-    // const response = signIn(email, password);
-    // if(response.success) {
-    //   //if successfull store jwt with AsyncStorage
-    //   this.props.navigation.navigate(Screens.HOME);
-    // } else {
-    //   //TODO display validation message
-    //   console.error(response.message);
-    // }
+    signUp(email, password).then((response) => {
+      if(response.success) {
+        //display message alerting email and verification process
+        this.props.navigation.navigate(Screens.HOME);
+      } else {
+        //TODO display validation message
+        console.error(response.message);
+      }
+    });
   }
 
   onPasswordConfirmationValidate(password, passwordConfirmationText) {
@@ -78,25 +78,15 @@ export default class SignUpScreen extends Component<Props> {
         <View style={{ flex: 2, flexDirection: 'column', justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate(Screens.HOME)}
+              onPress={() => this.onSignUp(this.state.emailText, this.state.passwordText)}
               style={styles.button}
-              testID="signInSubmitButton">
+              testID="signUpSubmitButton">
               <Text style={styles.buttonText}>
                 Sign Up
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text
-              onPress={() => this.onSignUp(this.state.emailText, this.state.passwordText)}
-              style={styles.linkText}>
-              No Account yet? Sign up now.
-            </Text>
-          </View>
-        </View> */}
 
       </View>
     );
