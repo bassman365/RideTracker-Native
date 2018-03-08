@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { styles } from '../../lib/styles';
 import { signUp } from '../../lib/api';
 import Screens from '../../lib/screens';
+import { validEmail } from '../../lib/validation';
+import { VerifiedStates, setVerified} from '../../lib/storage'
 
 type Props = {};
 export default class SignUpScreen extends Component<Props> {
@@ -13,26 +15,51 @@ export default class SignUpScreen extends Component<Props> {
       emailText: '',
       passwordText: '',
       passwordConfirmationText: '',
+      emailError: true,
+      passwordError: true
     };
 
     this.onSignUp = this.onSignUp.bind(this);
-    this.onEmailConfirmationValidate = this.onPasswordConfirmationValidate.bind(this);
+    this.onPasswordConfirmationValidate = this.onPasswordConfirmationValidate.bind(this);
+    this.onEmailValidate = this.onEmailValidate.bind(this);
   }
 
   onSignUp(email, password) {
     signUp(email, password).then((response) => {
-      if(response.success) {
-        //display message alerting email and verification process
-        this.props.navigation.navigate(Screens.HOME);
-      } else {
-        //TODO display validation message
-        console.error(response.message);
+      ToastAndroid.show(
+        response.message,
+        ToastAndroid.LONG
+      );
+      if (response.success) {
+        setVerified(VerifiedStates.PendingVerification).then(() => {
+          this.props.navigation.navigate(Screens.VERIFY);
+        });
       }
     });
   }
 
   onPasswordConfirmationValidate(password, passwordConfirmationText) {
+    if (password !== passwordConfirmationText) {
+      ToastAndroid.show(
+        'Password and confirm password do not match!',
+        ToastAndroid.LONG
+      );
+      this.setState({ passwordError: true }); //eslint-disable-line  react/no-set-state
+    } else {
+      this.setState({ passwordError: false }); //eslint-disable-line  react/no-set-state
+    }
+  }
 
+  onEmailValidate(email) {
+    if (!validEmail(email)) {
+      ToastAndroid.show(
+        'This is not a valid email address!',
+        ToastAndroid.LONG
+      );
+      this.setState({emailError: true}); //eslint-disable-line  react/no-set-state
+    } else {
+      this.setState({emailError: false}); //eslint-disable-line  react/no-set-state
+    }
   }
 
   render() {
@@ -49,7 +76,8 @@ export default class SignUpScreen extends Component<Props> {
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
               keyboardType="email-address"
-              onChangeText={(text) => this.setState({ emailText: text })}
+              onBlur={() => this.onEmailValidate(this.state.emailText)}
+              onChangeText={(text) => this.setState({emailText: text})} //eslint-disable-line  react/no-set-state
               placeholder="Email"
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}
             />
@@ -57,7 +85,7 @@ export default class SignUpScreen extends Component<Props> {
           <View style={{ flex: 0.2 }} />
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
-              onChangeText={(text) => this.setState({ passwordText: text })}
+              onChangeText={(text) => this.setState({passwordText: text})} //eslint-disable-line  react/no-set-state
               placeholder="Password"
               secureTextEntry
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}
@@ -67,7 +95,7 @@ export default class SignUpScreen extends Component<Props> {
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
               onBlur={() => this.onPasswordConfirmationValidate(this.state.passwordText, this.state.passwordConfirmationText)}
-              onChangeText={(text) => this.setState({ passwordConfirmationText: text })}
+              onChangeText={(text) => this.setState({passwordConfirmationText: text})} //eslint-disable-line  react/no-set-state
               placeholder="Confirm Password"
               secureTextEntry
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}
@@ -78,8 +106,9 @@ export default class SignUpScreen extends Component<Props> {
         <View style={{ flex: 2, flexDirection: 'column', justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
+              disabled={this.state.emailError || this.state.passwordError}
               onPress={() => this.onSignUp(this.state.emailText, this.state.passwordText)}
-              style={styles.button}
+              style={this.state.emailError || this.state.passwordError ? styles.disabledButton : styles.button}
               testID="signUpSubmitButton">
               <Text style={styles.buttonText}>
                 Sign Up

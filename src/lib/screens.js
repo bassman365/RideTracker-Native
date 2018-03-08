@@ -2,6 +2,9 @@ const HOME = 'Home';
 const DETAILS = 'Details';
 const SIGNIN = 'SignIn';
 const SIGNUP = 'SignUp';
+const VERIFY = 'Verify';
+const RESEND = 'Resend';
+const INITIAL = 'Initial';
 
 export default class Screens {
   static get HOME() {
@@ -18,5 +21,17 @@ export default class Screens {
 
   static get SIGNUP() {
     return SIGNUP;
+  }
+
+  static get VERIFY() {
+    return VERIFY;
+  }
+
+  static get RESEND() {
+    return RESEND;
+  }
+
+  static get INITIAL() {
+    return INITIAL;
   }
 }

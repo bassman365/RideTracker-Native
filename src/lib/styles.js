@@ -10,6 +10,10 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     color: '#4359e8'
   },
+  labelText: {
+    fontFamily: 'inconsolata_regular',
+    fontSize: 16,
+  },
   buttonText: {
     fontFamily: 'inconsolata_bold',
     fontSize: 22,
@@ -22,4 +26,11 @@ export const styles = StyleSheet.create({
     height: 40,
     flex: 0.8
   },
+  disabledButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(138,139,140,0.5)',
+    padding: 4,
+    height: 40,
+    flex: 0.8
+  }
 });

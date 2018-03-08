@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { styles } from '../../lib/styles';
 import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
+import { setToken } from '../../lib/storage';
 
 type Props = {};
 export default class SignInScreen extends Component<Props> {
@@ -17,16 +18,31 @@ export default class SignInScreen extends Component<Props> {
     this.onSignIn = this.onSignIn.bind(this);
   }
 
-  onSignIn(email, password) {
-    //try to get jwt
-    const response = signIn(email, password);
-    if(response.success) {
-      //if successfull store jwt with AsyncStorage
-      this.props.navigation.navigate(Screens.HOME);
-    } else {
-      //TODO display validation message
-      console.error(response.message);
+  async handleSignIn(email, password) {
+    try {
+      let response = await signIn(email, password);
+      ToastAndroid.show(
+        response.message,
+        ToastAndroid.LONG
+      );
+      if(response.success) {
+        await setToken(response.token);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
     }
+  }
+
+  onSignIn(email, password) {
+    this.handleSignIn(email, password).then((result) => {
+      if(result) {
+        this.props.navigation.navigate(Screens.HOME);
+      }
+    });
   }
 
   render() {
@@ -43,7 +59,7 @@ export default class SignInScreen extends Component<Props> {
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
               keyboardType="email-address"
-              onChangeText={(text) => this.setState({ emailText: text })}
+              onChangeText={(text) => this.setState({ emailText: text })} //eslint-disable-line  react/no-set-state
               placeholder="Email"
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}
             />
@@ -51,7 +67,7 @@ export default class SignInScreen extends Component<Props> {
           <View style={{ flex: 0.2 }} />
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TextInput
-              onChangeText={(text) => this.setState({ passwordText: text })}
+              onChangeText={(text) => this.setState({ passwordText: text })} //eslint-disable-line  react/no-set-state
               placeholder="Password"
               secureTextEntry
               style={{ flex: 0.8, borderWidth: 0, height: 40 }}

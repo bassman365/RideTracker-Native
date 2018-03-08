@@ -1,26 +1,36 @@
-// import { fetch } from 'react-native';
 import config from '../../config';
+import * as store from './storage';
 
-export function signIn(email, password) {
-  fetch(`${config.baseUrl}authenticate`, { //eslint-disable-line no-undef
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-    }),
-  })
-    .then((response) =>
-      response.json())
-    .then((responseJson) => {
-      return responseJson;
-    })
-    .catch((error) => {
-      console.error(error);
+export async function signIn(email, password) {
+  let success = false;
+  let message = '';
+  let token = '';
+  const route = `${config.baseUrl}authenticate`;
+  try {
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        isMobile: true
+      }),
     });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+      token = responseJson.token;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message, token: token };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function signUp(email, password) {
@@ -40,7 +50,7 @@ export async function signUp(email, password) {
         isMobile: true
       }),
     });
-    let responseJson = await response.json();
+    const responseJson = await response.json();
     if (response.ok) {
       success = true;
     }
@@ -53,21 +63,56 @@ export async function signUp(email, password) {
   }
 }
 
-export function verifyEmail(verificationCode) {
-  fetch(`${config.baseUrl}users/confirmation/${verificationCode}`, { //eslint-disable-line no-undef
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) =>
-      response.json())
-    .then((responseJson) => {
-      return responseJson;
-    })
-    .catch((error) => {
-      console.error(error);
+export async function verifyEmail(verificationCode) {
+  const route = `${config.baseUrl}users/confirmation/${verificationCode}`
+  let success = false;
+  let message = '';
+  try {
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message };
+  } catch (error) {
+    console.error(error);
+  }
+}
 
+export async function resendVerificationCode(email) {
+  const route = `${config.baseUrl}users/resend`
+  let success = false;
+  let message = '';
+  try {
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        isMobile: true
+      }),
+    });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message };
+  } catch (error) {
+    console.error(error);
+  }
 }
