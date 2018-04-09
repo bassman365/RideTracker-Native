@@ -5,6 +5,7 @@ const SIGNUP = 'SignUp';
 const VERIFY = 'Verify';
 const RESEND = 'Resend';
 const INITIAL = 'Initial';
+const ADD_RIDE = 'AddRide';
 
 export default class Screens {
   static get HOME() {
@@ -33,5 +34,9 @@ export default class Screens {
 
   static get INITIAL() {
     return INITIAL;
+  }
+
+  static get ADD_RIDE() {
+    return ADD_RIDE;
   }
 }

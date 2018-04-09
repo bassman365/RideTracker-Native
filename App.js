@@ -7,6 +7,7 @@ import SignUpScreen from './src/components/screens/signUpScreen';
 import VerifyScreen from './src/components/screens/verifyEmailScreen';
 import ResendVerifyScreen from './src/components/screens/resendVerify';
 import InitialScreen from './src/components/screens/initialScreen';
+import AddRideScreen from './src/components/screens/addRideScreen';
 import Screens from './src/lib/screens';
 
 const RootStack = StackNavigator(
@@ -31,6 +32,9 @@ const RootStack = StackNavigator(
     },
     Initial: {
       screen: InitialScreen,
+    },
+    AddRide: {
+      screen: AddRideScreen,
     }
   },
   {

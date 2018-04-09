@@ -21,8 +21,12 @@
   },
   "homepage": "https://github.com/bassman365/RideTracker-Native#readme",
   "dependencies": {
+    "jwt-decode": "^2.2.0",
+    "moment": "^2.21.0",
     "react": "^16.2.0",
     "react-native": "^0.52.2",
+    "react-native-textinput-effects": "^0.4.2",
+    "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^1.0.3"
   },
   "devDependencies": {

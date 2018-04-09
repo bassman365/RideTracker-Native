@@ -14,6 +14,19 @@ export const styles = StyleSheet.create({
     fontFamily: 'inconsolata_regular',
     fontSize: 16,
   },
+  labelText2: {
+    fontFamily: 'inconsolata_regular',
+    fontSize: 18,
+    flex: 0.8,
+    borderWidth: 0,
+    height: 30
+  },
+  dateText: {
+    fontFamily: 'inconsolata_regular',
+    fontSize: 18,
+    color: '#4359e8',
+    paddingHorizontal: 20
+  },
   buttonText: {
     fontFamily: 'inconsolata_bold',
     fontSize: 22,

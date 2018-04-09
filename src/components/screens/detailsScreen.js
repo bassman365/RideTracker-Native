@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, View, Text } from 'react-native';
+import { Button, View, Text, ToastAndroid } from 'react-native';
 
 export default class DetailsScreen extends Component {
   render() {
