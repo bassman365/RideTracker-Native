@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-nat
 import { styles } from '../../lib/styles';
 import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
-import { setToken } from '../../lib/storage';
+import { setTokenAsync } from '../../lib/storage';
 
 type Props = {};
 export default class SignInScreen extends Component<Props> {
@@ -26,7 +26,7 @@ export default class SignInScreen extends Component<Props> {
         ToastAndroid.LONG
       );
       if(response.success) {
-        await setToken(response.token);
+        await setTokenAsync(response.token);
         return true;
       } else {
         return false;

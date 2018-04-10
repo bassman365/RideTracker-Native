@@ -1,12 +1,12 @@
 import jwt_decode from 'jwt-decode';
-import { getToken, setToken, getVerified, VerifiedStates } from './storage';
+import { getTokenAsync, setTokenAsync, getVerifiedAsync, VerifiedStates } from './storage';
 import { renewToken } from './api';
 import Screens from './screens';
 import moment from 'moment';
 
 export async function isTokenExpired() {
   try {
-    const token = await getToken();
+    const token = await getTokenAsync();
     if (!token) {
       return true;
     }
@@ -32,10 +32,10 @@ export async function isTokenExpired() {
 export async function refreshToken() {
   try {
     let success = false;
-    const currentToken = await getToken();
+    const currentToken = await getTokenAsync();
     const renewResponse = await renewToken(currentToken);
     if (renewResponse.success) {
-      await setToken(renewResponse.token);
+      await setTokenAsync(renewResponse.token);
       success = true;
       console.info('refresh token success');
       return { success: success };
@@ -47,7 +47,7 @@ export async function refreshToken() {
 
 export async function getStartScreen() {
   try {
-    const verified = await getVerified();
+    const verified = await getVerifiedAsync();
     const isExpired = await isTokenExpired();
     switch (verified) {
     case VerifiedStates.Unverifed:

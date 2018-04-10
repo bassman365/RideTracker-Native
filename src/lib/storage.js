@@ -12,7 +12,7 @@ export const VerifiedStates = Object.freeze({
   Verified: 3
 });
 
-export async function setVerified(isVerified) {
+export async function setVerifiedAsync(isVerified) {
   try {
     await AsyncStorage.setItem(`${userStore}:${verifiedKey}`, JSON.stringify(isVerified));
   } catch (error) {
@@ -20,7 +20,7 @@ export async function setVerified(isVerified) {
   }
 }
 
-export async function getVerified() {
+export async function getVerifiedAsync() {
   try {
     const isVerified = await AsyncStorage.getItem(`${userStore}:${verifiedKey}`);
     const returnValue = JSON.parse(isVerified);
@@ -30,7 +30,7 @@ export async function getVerified() {
   }
 }
 
-export async function setToken(token) {
+export async function setTokenAsync(token) {
   try {
     await AsyncStorage.setItem(`${userStore}:${tokenKey}`, JSON.stringify(token));
   } catch (error) {
@@ -38,7 +38,7 @@ export async function setToken(token) {
   }
 }
 
-export async function getToken() {
+export async function getTokenAsync() {
   try {
     const token = await AsyncStorage.getItem(`${userStore}:${tokenKey}`);
     return JSON.parse(token);
@@ -47,18 +47,38 @@ export async function getToken() {
   }
 }
 
-export async function addInProgressRide(ride) {
+export async function addInProgressRideAsync(ride) {
   try {
     const inProgressRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
     if (inProgressRides) {
-      const newRides = Object.assign({}, ...JSON.parse(inProgressRides), ride);
+      // const newRides = Object.assign({}, ...JSON.parse(inProgressRides), ride);
+      const newRides = [...JSON.parse(inProgressRides), ride];
       await AsyncStorage.setItem(`${userStore}:${inProgressRideKey}`, JSON.stringify(newRides));
     } else {
       await AsyncStorage.setItem(`${userStore}:${inProgressRideKey}`, JSON.stringify([ride]));
     }
-    const savedRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
-    console.warn(savedRides);
   } catch (error) {
     // Error saving data
+  }
+}
+
+export async function getInProgressRidesAsync() {
+  try {
+    const inProgressRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
+    return JSON.parse(inProgressRides);
+  } catch (error) {
+    // Error saving data
+  }
+}
+
+export async function removeInProgressRideAsync(rideDateTime) {
+  try {
+    const inProgressRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
+    if (inProgressRides) {
+      const remaingRides = JSON.parse(inProgressRides).filter(x => x.datetime !== rideDateTime);
+      await AsyncStorage.setItem(`${userStore}:${inProgressRideKey}`, JSON.stringify(remaingRides));
+    }
+  } catch (error) {
+    // Error removing data
   }
 }

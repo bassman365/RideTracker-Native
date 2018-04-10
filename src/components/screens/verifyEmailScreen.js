@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-nat
 import { styles } from '../../lib/styles';
 import { verifyEmail } from '../../lib/api';
 import Screens from '../../lib/screens';
-import { setVerified, VerifiedStates } from '../../lib/storage';
+import { setVerifiedAsync, VerifiedStates } from '../../lib/storage';
 
 type Props = {};
 export default class VerifyScreen extends Component<Props> {
@@ -24,7 +24,7 @@ export default class VerifyScreen extends Component<Props> {
         ToastAndroid.LONG
       );
       if(response.success) {
-        setVerified(VerifiedStates.Verified)
+        setVerifiedAsync(VerifiedStates.Verified)
         this.props.navigation.navigate(Screens.SIGNIN);
       }
     });

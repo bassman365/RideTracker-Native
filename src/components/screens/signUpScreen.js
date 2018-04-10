@@ -5,7 +5,7 @@ import { styles } from '../../lib/styles';
 import { signUp } from '../../lib/api';
 import Screens from '../../lib/screens';
 import { validEmail } from '../../lib/validation';
-import { VerifiedStates, setVerified} from '../../lib/storage'
+import { VerifiedStates, setVerifiedAsync} from '../../lib/storage'
 
 type Props = {};
 export default class SignUpScreen extends Component<Props> {
@@ -31,7 +31,7 @@ export default class SignUpScreen extends Component<Props> {
         ToastAndroid.LONG
       );
       if (response.success) {
-        setVerified(VerifiedStates.PendingVerification).then(() => {
+        setVerifiedAsync(VerifiedStates.PendingVerification).then(() => {
           this.props.navigation.navigate(Screens.VERIFY);
         });
       }

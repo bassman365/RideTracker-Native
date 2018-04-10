@@ -20,7 +20,7 @@ import {
   updateHour,
   updateMinute
 } from '../../lib/helpers';
-import { addInProgressRide } from '../../lib/storage';
+import { addInProgressRideAsync, getInProgressRidesAsync } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -85,6 +85,12 @@ export default class AddRideScreen extends Component<Props> {
     });
   }
 
+  // async removeRides(rides) {
+  //   for (var i = 0, len = rides.length; i < len; i++) {
+  //     await removeInProgressRideAsync(rides[i].datetime);
+  //   }
+  // }
+
   startRide() {
     const ride = {
       weight: this.state.weight,
@@ -93,6 +99,14 @@ export default class AddRideScreen extends Component<Props> {
       datetime: this.state.date.datetime
     };
 
+    addInProgressRideAsync(ride).then(() => {
+      getInProgressRidesAsync().then((rides) => {
+        const test = [...rides];
+        // this.removeRides(rides).then(() => {
+        //   const thing = 'yo';
+        // });
+      });
+    });
   }
 
   render() {
