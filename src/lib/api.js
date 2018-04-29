@@ -1,5 +1,6 @@
 import config from '../../config';
 import { NetInfo, ToastAndroid } from 'react-native';
+import { getTokenAsync } from './storage';
 
 export async function signIn(email, password) {
   let success = false;
@@ -152,7 +153,7 @@ export async function renewToken(token) {
       message = responseJson.message;
     }
     return { success: success, message: message, token: token };
-  } catch(error) {
+  } catch (error) {
     const connected = await NetInfo.isConnected.fetch();
     if (connected) {
       console.info(`Connected value is: ${connected}`);
@@ -168,5 +169,92 @@ export async function renewToken(token) {
       );
     }
     //console.error(error);
+  }
+}
+
+export async function submitRideAsync(ride) {
+  let success = false;
+  let message = '';
+  const route = `${config.baseUrl}rides`;
+
+  try {
+    const token = await getTokenAsync();
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
+      body: JSON.stringify(ride),
+    });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message };
+  } catch (error) {
+    return { success: success, message: message};
+  }
+}
+
+export async function getRidesAsync() {
+  let success = false;
+  let message = '';
+  let rides = [];
+  const route = `${config.baseUrl}rides`;
+  try {
+    const token = await getTokenAsync();
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
+    });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+      rides = responseJson.rides;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message, rides: rides };
+  } catch (error) {
+    return { success: success, message: message};
+  }
+}
+
+export async function getProgramCollectionsAsync() {
+  let success = false;
+  let message = '';
+  let programCollections = [];
+  const route = `${config.baseUrl}programCollections`;
+  try {
+    const token = await getTokenAsync();
+    let response = await fetch(route, { //eslint-disable-line no-undef
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      },
+    });
+    const responseJson = await response.json();
+    if (response.ok) {
+      success = true;
+      programCollections = responseJson.programCollections;
+    }
+    if (responseJson.message) {
+      message = responseJson.message;
+    }
+    return { success: success, message: message, programCollections: programCollections };
+  } catch (error) {
+    return { success: success, message: message};
   }
 }

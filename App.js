@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import HomeScreen from './src/components/screens/homeScreen';
-import DetailsScreen from './src/components/screens/detailsScreen';
 import SignInScreen from './src/components/screens/signInScreen';
 import SignUpScreen from './src/components/screens/signUpScreen';
 import VerifyScreen from './src/components/screens/verifyEmailScreen';
 import ResendVerifyScreen from './src/components/screens/resendVerify';
 import InitialScreen from './src/components/screens/initialScreen';
 import AddRideScreen from './src/components/screens/addRideScreen';
+import FinishRideScreen from './src/components/screens/finishRideScreen';
+import ViewRidesScreen from './src/components/screens/viewRidesScreen';
 import Screens from './src/lib/screens';
 
 const RootStack = StackNavigator(
   {
     Home: {
       screen: HomeScreen,
-    },
-    Details: {
-      screen: DetailsScreen,
     },
     SignIn: {
       screen: SignInScreen,
@@ -35,6 +33,12 @@ const RootStack = StackNavigator(
     },
     AddRide: {
       screen: AddRideScreen,
+    },
+    FinishRide: {
+      screen: FinishRideScreen,
+    },
+    ViewRides: {
+      screen: ViewRidesScreen,
     }
   },
   {

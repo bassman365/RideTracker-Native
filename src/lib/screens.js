@@ -6,14 +6,12 @@ const VERIFY = 'Verify';
 const RESEND = 'Resend';
 const INITIAL = 'Initial';
 const ADD_RIDE = 'AddRide';
+const FINISH_RIDE = 'FinishRide';
+const VIEW_RIDES = 'ViewRides';
 
 export default class Screens {
   static get HOME() {
     return HOME;
-  }
-
-  static get DETAILS() {
-    return DETAILS;
   }
 
   static get SIGNIN() {
@@ -38,5 +36,13 @@ export default class Screens {
 
   static get ADD_RIDE() {
     return ADD_RIDE;
+  }
+
+  static get FINISH_RIDE() {
+    return FINISH_RIDE;
+  }
+
+  static get VIEW_RIDES() {
+    return VIEW_RIDES;
   }
 }

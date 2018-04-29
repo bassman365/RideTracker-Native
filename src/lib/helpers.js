@@ -1,6 +1,6 @@
 import jwt_decode from 'jwt-decode';
-import { getTokenAsync, setTokenAsync, getVerifiedAsync, VerifiedStates } from './storage';
-import { renewToken } from './api';
+import { getTokenAsync, setTokenAsync, getVerifiedAsync, VerifiedStates, setProgramCollectionsAsync } from './storage';
+import { getProgramCollectionsAsync, renewToken } from './api';
 import Screens from './screens';
 import moment from 'moment';
 
@@ -29,7 +29,7 @@ export async function isTokenExpired() {
   }
 }
 
-export async function refreshToken() {
+export async function refreshTokenAsync() {
   try {
     let success = false;
     const currentToken = await getTokenAsync();
@@ -42,6 +42,21 @@ export async function refreshToken() {
     }
   } catch (error) {
     console.error(error);
+  }
+}
+
+export async function refreshProgramCollections() {
+  let success = false;
+  try {
+    const response = await getProgramCollectionsAsync();
+    if (response.success){
+      await setProgramCollectionsAsync(response.programCollections);
+      success = true;
+    }
+    return { success: success };
+  } catch (error) {
+    console.error(error);
+    return { success: success };
   }
 }
 
@@ -101,4 +116,26 @@ export function updateHour(dateString, hour) {
 export function updateMinute(dateString, minute) {
   const updatedDate = moment(dateString).set('minute', minute);
   return new Date(updatedDate).valueOf();
+}
+
+export function getElapsedTime(startTime) {
+  const duration = moment.duration(moment(Date.now()).diff(moment(startTime)));
+  return {
+    hours: duration.get('hours'),
+    minutes: duration.get('minutes'),
+    seconds: duration.get('seconds')
+  }
+}
+
+export function getSecondsFromTime(time) {
+  return (time.hours * 60 * 60) + (time.seconds * 60) + time.seconds;
+}
+
+export function getTimeFromSeconds(seconds) {
+  const duration = moment.duration(seconds, 'seconds');
+  return {
+    hours: duration.get('hours'),
+    minutes: duration.get('minutes'),
+    seconds: duration.get('seconds')
+  }
 }

@@ -20,7 +20,10 @@ import {
   updateHour,
   updateMinute
 } from '../../lib/helpers';
-import { addInProgressRideAsync, getInProgressRidesAsync } from '../../lib/storage';
+import {
+  addInProgressRideAsync,
+  getInProgressRidesAsync,
+  getProgramCollectionsAsync } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -37,7 +40,8 @@ export default class AddRideScreen extends Component<Props> {
         datetime: '',
         displayDate: '',
         displayTime: ''
-      }
+      },
+      programs: [],
     };
 
     this.setDates = this.setDates.bind(this);
@@ -48,6 +52,26 @@ export default class AddRideScreen extends Component<Props> {
 
   componentWillMount() {
     this.setDates(Date.now());
+
+    getProgramCollectionsAsync().then((programCollections) => {
+      if (programCollections && programCollections.length > 0) {
+        const programs = programCollections[0] //only one collection is currently supported
+          .programs
+          .map((program) => {
+            return program.name;
+          });
+        this.setState({programs: programs}); //eslint-disable-line react/no-set-state
+        if (programCollections[0].defautProgram) {
+          let initialProgram = programs.find(x => x === programCollections[0].defautProgram);
+          if(!initialProgram) {
+            initialProgram = programs[0];
+          }
+          this.setState({program: initialProgram}); //eslint-disable-line react/no-set-state
+        } else {
+          this.setState({program: programs[0]}); //eslint-disable-line react/no-set-state
+        }
+      }
+    });
   }
 
   setDates(dateValue) {
@@ -57,7 +81,7 @@ export default class AddRideScreen extends Component<Props> {
       displayTime: getDisplayTime(dateValue)
     };
 
-    this.setState({ date: Object.assign({}, tempDate) }); //eslint-disable-line  react/no-set-state
+    this.setState({ date: Object.assign({}, tempDate) }); //eslint-disable-line react/no-set-state
   }
 
   updateTime() {
@@ -105,18 +129,20 @@ export default class AddRideScreen extends Component<Props> {
         // this.removeRides(rides).then(() => {
         //   const thing = 'yo';
         // });
+        this.props.navigation.navigate(Screens.HOME);
       });
     });
   }
 
   render() {
-    const programs = ["Ride in the park", "Hills"];
-    const programPickerItems = programs.map((program, i) => {
+
+    const programPickerItems = this.state.programs.map((program, i) => {
       return (<Picker.Item
         key={i}
         label={program}
         value={program} />)
     });
+
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <View style={{ flex: 1 }}>
