@@ -1,11 +1,18 @@
 import { AsyncStorage } from 'react-native'
-import jwt_decode from 'jwt-decode';
 const userStore = '@RIDE_TRACKER_USER_STORE'
 const verifiedKey = 'VERIFIED';
 const tokenKey = 'AUTHORIZATION_TOKEN';
 const completedRideKey = 'COMPLETED_RIDES';
 const inProgressRideKey = 'IN_PROGRESS_RIDES';
 const programCollectionsKey = 'PROGRAM_COLLECTIONS';
+
+function getReturnValue(value) {
+  let returnValue = null;
+  if (value !== null && value !== undefined){
+    returnValue = JSON.parse(value);
+  }
+  return returnValue;
+}
 
 export const VerifiedStates = Object.freeze({
   Unverifed: 1,
@@ -24,8 +31,7 @@ export async function setVerifiedAsync(isVerified) {
 export async function getVerifiedAsync() {
   try {
     const isVerified = await AsyncStorage.getItem(`${userStore}:${verifiedKey}`);
-    const returnValue = JSON.parse(isVerified);
-    return returnValue;
+    return getReturnValue(isVerified);
   } catch (error) {
     console.error(error);
   }
@@ -42,7 +48,7 @@ export async function setTokenAsync(token) {
 export async function getTokenAsync() {
   try {
     const token = await AsyncStorage.getItem(`${userStore}:${tokenKey}`);
-    return JSON.parse(token);
+    return getReturnValue(token)
   } catch (error) {
     // Error saving data
   }
@@ -52,7 +58,6 @@ export async function addInProgressRideAsync(ride) {
   try {
     const inProgressRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
     if (inProgressRides) {
-      // const newRides = Object.assign({}, ...JSON.parse(inProgressRides), ride);
       const newRides = [...JSON.parse(inProgressRides), ride];
       await AsyncStorage.setItem(`${userStore}:${inProgressRideKey}`, JSON.stringify(newRides));
     } else {
@@ -66,7 +71,7 @@ export async function addInProgressRideAsync(ride) {
 export async function getInProgressRidesAsync() {
   try {
     const inProgressRides = await AsyncStorage.getItem(`${userStore}:${inProgressRideKey}`);
-    return JSON.parse(inProgressRides);
+    return getReturnValue(inProgressRides);
   } catch (error) {
     // Error saving data
   }
@@ -101,7 +106,7 @@ export async function addCompletedRideAsync(ride) {
 export async function getCompletedRidesAsync() {
   try {
     const completedRides = await AsyncStorage.getItem(`${userStore}:${completedRideKey}`);
-    return JSON.parse(completedRides);
+    return getReturnValue(completedRides);
   } catch (error) {
     // Error saving data
   }
@@ -127,10 +132,10 @@ export async function setProgramCollectionsAsync(programCollections) {
   }
 }
 
-export async function getProgramCollectionsAsync() {
+export async function getCachedProgramCollectionsAsync() {
   try {
     const programCollections = await AsyncStorage.getItem(`${userStore}:${programCollectionsKey}`);
-    return JSON.parse(programCollections);
+    return getReturnValue(programCollections);
   } catch (error) {
     // Error saving data
   }

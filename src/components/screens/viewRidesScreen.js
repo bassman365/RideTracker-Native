@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import GridView from 'react-native-super-grid';
 import { getRidesAsync } from '../../lib/api';
+import { getCachedProgramCollectionsAsync } from '../../lib/storage';
 import { getDisplayDate } from '../../lib/helpers';
 
 type Props = {};
@@ -19,11 +20,26 @@ export default class ViewRidesScreen extends Component<Props> {
   }
 
   componentWillMount() {
+    let rides = [];
     getRidesAsync().then((response) => {
       if(response.success) {
-        this.setState({rides: response.rides}); //eslint-disable-line react/no-set-state
+        rides = response.rides;
       }
     });
+
+    getCachedProgramCollectionsAsync().then((programCollections) => {
+      if (programCollections && programCollections.length > 0) {
+        const programs = programCollections[0].programs;
+        rides.map((ride) => {
+          const program = programs.find(x => x.name === ride.program);
+          if (program && program.hexColor) {
+            ride.color = program.hexColor
+          }
+        });
+      }
+    });
+
+    this.setState({rides: rides}); //eslint-disable-line react/no-set-state
   }
 
   render() {
@@ -32,7 +48,7 @@ export default class ViewRidesScreen extends Component<Props> {
         itemDimension={128}
         items={this.state.rides}
         renderItem={ride => (
-          <View style={[styles.itemContainer, { backgroundColor: '#2980b9' }]}>
+          <View style={[styles.itemContainer, { backgroundColor: ride.color ? ride.color : '#2980b9' }]}>
             <Text style={styles.itemName}>Program: {ride.program}</Text>
             <Text style={styles.itemCode}>Date: {getDisplayDate(ride.date)}</Text>
             <Text style={styles.itemCode}>Weight: {ride.weight}</Text>

@@ -28,7 +28,6 @@ export default class HomeScreen extends Component<Props> {
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
 
         <View style={{ flex: 0.1 }} />
         <Button

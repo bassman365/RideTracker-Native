@@ -1,5 +1,11 @@
 import jwt_decode from 'jwt-decode';
-import { getTokenAsync, setTokenAsync, getVerifiedAsync, VerifiedStates, setProgramCollectionsAsync } from './storage';
+import {
+  getTokenAsync,
+  setTokenAsync,
+  getVerifiedAsync,
+  VerifiedStates,
+  setProgramCollectionsAsync
+} from './storage';
 import { getProgramCollectionsAsync, renewToken } from './api';
 import Screens from './screens';
 import moment from 'moment';
@@ -33,11 +39,16 @@ export async function refreshTokenAsync() {
   try {
     let success = false;
     const currentToken = await getTokenAsync();
-    const renewResponse = await renewToken(currentToken);
-    if (renewResponse.success) {
-      await setTokenAsync(renewResponse.token);
-      success = true;
-      console.info('refresh token success');
+
+    if (!currentToken) {
+      return { success: success };
+    } else {
+      const renewResponse = await renewToken(currentToken);
+      if (renewResponse.success) {
+        await setTokenAsync(renewResponse.token);
+        success = true;
+        console.info('refresh token success');
+      }
       return { success: success };
     }
   } catch (error) {
@@ -49,7 +60,7 @@ export async function refreshProgramCollections() {
   let success = false;
   try {
     const response = await getProgramCollectionsAsync();
-    if (response.success){
+    if (response.success) {
       await setProgramCollectionsAsync(response.programCollections);
       success = true;
     }

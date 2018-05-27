@@ -78,8 +78,9 @@ export default class SignInScreen extends Component<Props> {
         <View style={{ flex: 2, flexDirection: 'column', justifyContent: 'center' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <TouchableOpacity
+              disabled={this.state.emailText.length === 0 || this.state.passwordText.length === 0}
               onPress={() => this.onSignIn(this.state.emailText, this.state.passwordText)}
-              style={styles.button}
+              style={this.state.emailText.length === 0 || this.state.passwordText.length === 0 ? styles.disabledButton : styles.button}
               testID="signInSubmitButton">
               <Text style={styles.buttonText}>
                 Sign In

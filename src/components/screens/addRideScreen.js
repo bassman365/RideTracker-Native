@@ -23,7 +23,7 @@ import {
 import {
   addInProgressRideAsync,
   getInProgressRidesAsync,
-  getProgramCollectionsAsync } from '../../lib/storage';
+  getCachedProgramCollectionsAsync } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -53,7 +53,7 @@ export default class AddRideScreen extends Component<Props> {
   componentWillMount() {
     this.setDates(Date.now());
 
-    getProgramCollectionsAsync().then((programCollections) => {
+    getCachedProgramCollectionsAsync().then((programCollections) => {
       if (programCollections && programCollections.length > 0) {
         const programs = programCollections[0] //only one collection is currently supported
           .programs
