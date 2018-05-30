@@ -100,6 +100,10 @@ export function getDisplayDate(dateString) {
   return moment(dateString).format('dddd MMMM Do YYYY');
 }
 
+export function getShortDisplayDate(dateString) {
+  return moment(dateString).format('MM/DD/YYYY');
+}
+
 export function getDisplayTime(dateString) {
   return moment(dateString).format('h:mm a');
 }

@@ -105,3 +105,5 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 config.js
+.vs/VSWorkspaceState.json
+.vs/RideTrackerNative/v15/.suo

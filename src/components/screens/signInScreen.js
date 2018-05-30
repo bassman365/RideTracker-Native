@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-nat
 import { styles } from '../../lib/styles';
 import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
-import { setTokenAsync } from '../../lib/storage';
+import { setTokenAsync, setVerifiedAsync, VerifiedStates } from '../../lib/storage';
 
 type Props = {};
 export default class SignInScreen extends Component<Props> {
@@ -27,6 +27,7 @@ export default class SignInScreen extends Component<Props> {
       );
       if(response.success) {
         await setTokenAsync(response.token);
+        await setVerifiedAsync(VerifiedStates.Verified);
         return true;
       } else {
         return false;

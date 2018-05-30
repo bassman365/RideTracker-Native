@@ -8,7 +8,7 @@ import {
 import GridView from 'react-native-super-grid';
 import { getRidesAsync } from '../../lib/api';
 import { getCachedProgramCollectionsAsync } from '../../lib/storage';
-import { getDisplayDate } from '../../lib/helpers';
+import { getShortDisplayDate } from '../../lib/helpers';
 
 type Props = {};
 export default class ViewRidesScreen extends Component<Props> {
@@ -16,18 +16,28 @@ export default class ViewRidesScreen extends Component<Props> {
     super(props);
     this.state = {
       rides: [],
-    }
+    };
+    this.getRidesAsync = this.getRidesAsync.bind(this);
   }
 
   componentWillMount() {
-    let rides = [];
-    getRidesAsync().then((response) => {
-      if(response.success) {
-        rides = response.rides;
-      }
+    this.getRidesAsync().then((rides) => {
+      this.setState({rides: rides}); //eslint-disable-line react/no-set-state
     });
+  }
 
-    getCachedProgramCollectionsAsync().then((programCollections) => {
+  async getRidesAsync() {
+    try {
+      let rides = [];
+      let rideResponse = await getRidesAsync();
+      if(!rideResponse.success) {
+        throw new Error(rideResponse.message);
+      }
+
+      rides = rideResponse.rides;
+
+      let programCollections = await getCachedProgramCollectionsAsync();
+
       if (programCollections && programCollections.length > 0) {
         const programs = programCollections[0].programs;
         rides.map((ride) => {
@@ -37,9 +47,11 @@ export default class ViewRidesScreen extends Component<Props> {
           }
         });
       }
-    });
 
-    this.setState({rides: rides}); //eslint-disable-line react/no-set-state
+      return rides;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {
@@ -50,7 +62,7 @@ export default class ViewRidesScreen extends Component<Props> {
         renderItem={ride => (
           <View style={[styles.itemContainer, { backgroundColor: ride.color ? ride.color : '#2980b9' }]}>
             <Text style={styles.itemName}>Program: {ride.program}</Text>
-            <Text style={styles.itemCode}>Date: {getDisplayDate(ride.date)}</Text>
+            <Text style={styles.itemCode}>Date: {getShortDisplayDate(ride.date)}</Text>
             <Text style={styles.itemCode}>Weight: {ride.weight}</Text>
             <Text style={styles.itemCode}>Calories: {ride.calories}</Text>
             <Text style={styles.itemCode}>Distance: {ride.distance}</Text>
@@ -69,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     borderRadius: 5,
     padding: 10,
     height: 150,
