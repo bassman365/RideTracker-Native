@@ -107,3 +107,4 @@ buck-out/
 config.js
 .vs/VSWorkspaceState.json
 .vs/RideTrackerNative/v15/.suo
+.vs/slnx.sqlite
