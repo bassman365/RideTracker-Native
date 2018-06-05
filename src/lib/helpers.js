@@ -143,14 +143,21 @@ export function getElapsedTime(startTime) {
 }
 
 export function getSecondsFromTime(time) {
-  return (time.hours * 60 * 60) + (time.seconds * 60) + time.seconds;
+  return (time.hours * 60 * 60) + (time.minutes * 60) + time.seconds;
 }
 
-export function getTimeFromSeconds(seconds) {
+export function getDisplayTimeFromSeconds(seconds) {
   const duration = moment.duration(seconds, 'seconds');
-  return {
+
+  const span = {
     hours: duration.get('hours'),
     minutes: duration.get('minutes'),
     seconds: duration.get('seconds')
   }
+
+  const hoursDisplay = span.hours > 0 ? ` ${span.hours} Hours` : '';
+  const minutesDisplay = span.minutes > 0 ? ` ${span.minutes} Minutes` : '';
+  const secondsDisplay = span.seconds > 0 ? ` ${span.seconds} Seconds` : '';
+
+  return `${hoursDisplay}${minutesDisplay}${secondsDisplay}`;
 }

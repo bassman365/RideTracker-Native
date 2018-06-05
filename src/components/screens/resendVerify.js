@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid, Keyboard } from 'react-native';
 import { styles } from '../../lib/styles';
 import { resendVerificationCode } from '../../lib/api';
 import Screens from '../../lib/screens';
@@ -27,6 +27,7 @@ export default class ResendVerifyScreen extends Component<Props> {
         ToastAndroid.CENTER
       );
       if (response.success) {
+        Keyboard.dismiss();
         this.props.navigation.navigate(Screens.VERIFY);
       }
     });

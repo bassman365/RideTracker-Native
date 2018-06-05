@@ -8,7 +8,7 @@ import {
 import GridView from 'react-native-super-grid';
 import { getRidesAsync } from '../../lib/api';
 import { getCachedProgramCollectionsAsync } from '../../lib/storage';
-import { getShortDisplayDate } from '../../lib/helpers';
+import { getShortDisplayDate, getDisplayTimeFromSeconds } from '../../lib/helpers';
 
 type Props = {};
 export default class ViewRidesScreen extends Component<Props> {
@@ -67,6 +67,7 @@ export default class ViewRidesScreen extends Component<Props> {
             <Text style={styles.itemCode}>Calories: {ride.calories}</Text>
             <Text style={styles.itemCode}>Distance: {ride.distance}</Text>
             <Text style={styles.itemCode}>Level: {ride.level}</Text>
+            <Text style={styles.itemCode}>Duration: {getDisplayTimeFromSeconds(ride.durationSeconds)}</Text>
           </View>
         )}
         style={styles.gridView}

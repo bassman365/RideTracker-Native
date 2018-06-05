@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid, Keyboard } from 'react-native';
 import { styles } from '../../lib/styles';
 import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
@@ -41,6 +41,7 @@ export default class SignInScreen extends Component<Props> {
   onSignIn(email, password) {
     this.handleSignIn(email, password).then((result) => {
       if(result) {
+        Keyboard.dismiss();
         this.props.navigation.navigate(Screens.HOME);
       }
     });

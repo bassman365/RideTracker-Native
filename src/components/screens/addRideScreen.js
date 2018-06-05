@@ -7,7 +7,8 @@ import {
   Text,
   TouchableOpacity,
   TimePickerAndroid,
-  DatePickerAndroid
+  DatePickerAndroid,
+  Keyboard
 } from 'react-native';
 import { styles } from '../../lib/styles';
 import Screens from '../../lib/screens';
@@ -22,10 +23,8 @@ import {
 } from '../../lib/helpers';
 import {
   addInProgressRideAsync,
-  getInProgressRidesAsync,
   getCachedProgramCollectionsAsync } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {};
 export default class AddRideScreen extends Component<Props> {
@@ -109,12 +108,6 @@ export default class AddRideScreen extends Component<Props> {
     });
   }
 
-  // async removeRides(rides) {
-  //   for (var i = 0, len = rides.length; i < len; i++) {
-  //     await removeInProgressRideAsync(rides[i].datetime);
-  //   }
-  // }
-
   startRide() {
     const ride = {
       weight: this.state.weight,
@@ -124,13 +117,8 @@ export default class AddRideScreen extends Component<Props> {
     };
 
     addInProgressRideAsync(ride).then(() => {
-      getInProgressRidesAsync().then((rides) => {
-        const test = [...rides];
-        // this.removeRides(rides).then(() => {
-        //   const thing = 'yo';
-        // });
-        this.props.navigation.navigate(Screens.HOME);
-      });
+      Keyboard.dismiss();
+      this.props.navigation.navigate(Screens.HOME);
     });
   }
 

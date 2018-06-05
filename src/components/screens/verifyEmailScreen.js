@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ToastAndroid, Keyboard } from 'react-native';
 import { styles } from '../../lib/styles';
 import { verifyEmail } from '../../lib/api';
 import Screens from '../../lib/screens';
@@ -25,6 +25,7 @@ export default class VerifyScreen extends Component<Props> {
       );
       if(response.success) {
         setVerifiedAsync(VerifiedStates.Verified)
+        Keyboard.dismiss();
         this.props.navigation.navigate(Screens.SIGNIN);
       }
     });

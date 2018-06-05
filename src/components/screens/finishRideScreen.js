@@ -5,7 +5,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ToastAndroid
+  ToastAndroid,
+  Keyboard
 } from 'react-native';
 import { styles } from '../../lib/styles';
 import Screens from '../../lib/screens';
@@ -57,7 +58,7 @@ export default class FinishRideScreen extends Component<Props> {
       this.setState({ duration: calculatedRideDuration }) //eslint-disable-line  react/no-set-state
 
       let minutesList = [];
-      for (let i = 0; i <= 60; i++) {
+      for (let i = 0; i < 60; i++) {
         minutesList.push(i);
       }
 
@@ -171,6 +172,7 @@ export default class FinishRideScreen extends Component<Props> {
     }
 
     this.handleSubmitRide(ride).then(() => {
+      Keyboard.dismiss();
       this.props.navigation.navigate(Screens.HOME);
     });
   }
