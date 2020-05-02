@@ -19,8 +19,7 @@ import {
 } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
 
-type Props = {};
-export default class FinishRideScreen extends Component<Props> {
+export default class FinishRideScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,7 +49,7 @@ export default class FinishRideScreen extends Component<Props> {
     this.handleSubmitRide = this.handleSubmitRide.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getInProgressRidesAsync().then((rides) => {
       this.setState({inProgressRide: rides[0]}) //eslint-disable-line  react/no-set-state
       const startTime = this.state.inProgressRide.datetime;

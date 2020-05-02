@@ -6,8 +6,7 @@ import { resendVerificationCode } from '../../lib/api';
 import Screens from '../../lib/screens';
 import { validEmail } from '../../lib/validation';
 
-type Props = {};
-export default class ResendVerifyScreen extends Component<Props> {
+export default class ResendVerifyScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {

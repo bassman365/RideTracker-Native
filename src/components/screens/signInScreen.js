@@ -6,8 +6,7 @@ import { signIn } from '../../lib/api';
 import Screens from '../../lib/screens';
 import { setTokenAsync, setVerifiedAsync, VerifiedStates } from '../../lib/storage';
 
-type Props = {};
-export default class SignInScreen extends Component<Props> {
+export default class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,33 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation'
-import { getStartScreen, refreshProgramCollections, refreshTokenAsync } from '../../lib/helpers';
+import { NavigationActions } from 'react-navigation';
+import {
+  getStartScreen,
+  refreshProgramCollections,
+  refreshTokenAsync,
+} from '../../lib/helpers';
 
-type Props = {};
-export default class InitialScreen extends Component<Props> {
+export default class InitialScreen extends Component {
   constructor(props) {
     super(props);
-  }
 
-  componentWillMount() {
-    //TODO use promise all here
-    refreshTokenAsync().then((response) => {
-      const sucessful = response.success ? 'was' : 'was not';
-      console.info(`refreshing token ${sucessful} successful`);
-    });
+        //TODO use promise all here
+        refreshTokenAsync().then(response => {
+          const sucessful = response.success ? 'was' : 'was not';
+          console.info(`refreshing token ${sucessful} successful`);
+        });
 
-    refreshProgramCollections().then((response) => {
-      const sucessful = response.success ? 'was' : 'was not';
-      console.info(`refreshing programCollections ${sucessful} successful`);
-    });
+        refreshProgramCollections().then(response => {
+          const sucessful = response.success ? 'was' : 'was not';
+          console.info(`refreshing programCollections ${sucessful} successful`);
+        });
 
-    getStartScreen().then((screenName) => {
-      console.info(`default screen is ${screenName}`);
-      this.props.navigation.dispatch(NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: screenName })]
-      }));
-    });
+        getStartScreen().then(screenName => {
+          console.info(`default screen is ${screenName}`);
+          this.props.navigation.replace(screenName);
+        });
+
   }
 
   render() {

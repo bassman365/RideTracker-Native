@@ -1,57 +1,40 @@
-import React, { Component } from 'react';
-import { StackNavigator } from 'react-navigation';
-import HomeScreen from './src/components/screens/homeScreen';
-import SignInScreen from './src/components/screens/signInScreen';
-import SignUpScreen from './src/components/screens/signUpScreen';
-import VerifyScreen from './src/components/screens/verifyEmailScreen';
-import ResendVerifyScreen from './src/components/screens/resendVerify';
-import InitialScreen from './src/components/screens/initialScreen';
-import AddRideScreen from './src/components/screens/addRideScreen';
-import FinishRideScreen from './src/components/screens/finishRideScreen';
-import ViewRidesScreen from './src/components/screens/viewRidesScreen';
-import Screens from './src/lib/screens';
+import 'react-native-gesture-handler';
+import * as React from 'react';
+import {Button, View, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
-const RootStack = StackNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-    },
-    SignIn: {
-      screen: SignInScreen,
-    },
-    SignUp: {
-      screen: SignUpScreen,
-    },
-    Verify: {
-      screen: VerifyScreen,
-    },
-    Resend: {
-      screen: ResendVerifyScreen,
-    },
-    Initial: {
-      screen: InitialScreen,
-    },
-    AddRide: {
-      screen: AddRideScreen,
-    },
-    FinishRide: {
-      screen: FinishRideScreen,
-    },
-    ViewRides: {
-      screen: ViewRidesScreen,
-    }
-  },
-  {
-    initialRouteName: Screens.INITIAL,
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false,
-    }
-  }
-);
-
-export default class App extends Component {
-  render() {
-    return <RootStack />;
-  }
+function HomeScreen({navigation}) {
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
+  );
 }
+
+function DetailsScreen() {
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text>Details Screen</Text>
+    </View>
+  );
+}
+
+const Stack = createStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+export default App;

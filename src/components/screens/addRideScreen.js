@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Picker,
-  Slider,
+  Picker, // TODO use @react-native-community/picker
+  Slider, // TODO user @react-native-community/slider
   View,
   Text,
   TouchableOpacity,
-  TimePickerAndroid,
-  DatePickerAndroid,
   Keyboard
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+// import {Picker} from '@react-native-community/picker'
+// import { Slider } from '@react-native-community/slider'
 import { styles } from '../../lib/styles';
 import Screens from '../../lib/screens';
 import {
@@ -19,15 +21,15 @@ import {
   updateMonth,
   updateDay,
   updateHour,
-  updateMinute
+  updateMinute,
+  updateDate
 } from '../../lib/helpers';
 import {
   addInProgressRideAsync,
   getCachedProgramCollectionsAsync } from '../../lib/storage';
 import { Hoshi } from 'react-native-textinput-effects';
 
-type Props = {};
-export default class AddRideScreen extends Component<Props> {
+export default class AddRideScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,15 +43,18 @@ export default class AddRideScreen extends Component<Props> {
         displayTime: ''
       },
       programs: [],
+      showTimePicker: false,
+      dateTimePickerMode: 'time'
     };
 
+    this.setDateTime = this.setDateTime.bind(this);
     this.setDates = this.setDates.bind(this);
     this.updateTime = this.updateTime.bind(this);
     this.updateDate = this.updateDate.bind(this);
     this.startRide = this.startRide.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setDates(Date.now());
 
     getCachedProgramCollectionsAsync().then((programCollections) => {
@@ -59,15 +64,15 @@ export default class AddRideScreen extends Component<Props> {
           .map((program) => {
             return program.name;
           });
-        this.setState({programs: programs}); //eslint-disable-line react/no-set-state
+        this.setState({programs: programs});
         if (programCollections[0].defautProgram) {
           let initialProgram = programs.find(x => x === programCollections[0].defautProgram);
           if(!initialProgram) {
             initialProgram = programs[0];
           }
-          this.setState({program: initialProgram}); //eslint-disable-line react/no-set-state
+          this.setState({program: initialProgram});
         } else {
-          this.setState({program: programs[0]}); //eslint-disable-line react/no-set-state
+          this.setState({program: programs[0]});
         }
       }
     });
@@ -80,31 +85,36 @@ export default class AddRideScreen extends Component<Props> {
       displayTime: getDisplayTime(dateValue)
     };
 
-    this.setState({ date: Object.assign({}, tempDate) }); //eslint-disable-line react/no-set-state
+    this.setState({ date: Object.assign({}, tempDate) });
+  }
+
+  setDateTime(event, date) {
+    if (date !== undefined) {
+      // Use the hour and minute from the date object
+      this.setState({showTimePicker: false});
+      if (this.state.dateTimePickerMode === 'time') {
+        let updatedTime = updateHour(this.state.date.datetime, date.getHours());
+        updatedTime = updateMinute(updatedTime, date.getMinutes());
+        this.setDates(updatedTime);
+      }
+
+      if (this.state.dateTimePickerMode === 'date') {
+        this.setDates(updateDate(date));
+      }
+    }
   }
 
   updateTime() {
-    TimePickerAndroid.open().then((result) => {
-      if (result.action !== TimePickerAndroid.dismissedAction) {
-        let updatedTime = updateHour(this.state.date.datetime, result.hour);
-        updatedTime = updateMinute(updatedTime, result.minute);
-        this.setDates(updatedTime);
-      }
-    }).catch((code, message) => {
-      console.warn('Cannot open time picker', message);
+    this.setState({
+      showTimePicker: true,
+      dateTimePickerMode: 'time',
     });
   }
 
   updateDate() {
-    DatePickerAndroid.open().then((result) => {
-      if (result.action !== DatePickerAndroid.dismissedAction) {
-        let updatedTime = updateYear(this.state.date.datetime, result.year);
-        updatedTime = updateMonth(updatedTime, result.month);
-        updatedTime = updateDay(updatedTime, result.day);
-        this.setDates(updatedTime);
-      }
-    }).catch((code, message) => {
-      console.warn('Cannot open time picker', message);
+    this.setState({
+      dateTimePickerMode: 'date',
+      showTimePicker: true,
     });
   }
 
@@ -123,7 +133,6 @@ export default class AddRideScreen extends Component<Props> {
   }
 
   render() {
-
     const programPickerItems = this.state.programs.map((program, i) => {
       return (<Picker.Item
         key={i}
@@ -155,6 +164,12 @@ export default class AddRideScreen extends Component<Props> {
                 style={styles.dateText}>
                 {this.state.date.displayTime}
               </Text>
+              {this.state.showTimePicker && (
+                <DateTimePicker
+                  mode={this.state.dateTimePickerMode}
+                  value={new Date()}
+                  onChange={this.setDateTime} />
+              )}
             </View>
 
             <View style={{ flex: 0.1 }} />

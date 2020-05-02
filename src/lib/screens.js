@@ -1,48 +1,60 @@
-const HOME = 'Home';
-const DETAILS = 'Details';
-const SIGNIN = 'SignIn';
-const SIGNUP = 'SignUp';
-const VERIFY = 'Verify';
-const RESEND = 'Resend';
-const INITIAL = 'Initial';
-const ADD_RIDE = 'AddRide';
-const FINISH_RIDE = 'FinishRide';
-const VIEW_RIDES = 'ViewRides';
+// const HOME = 'Home';
+// const DETAILS = 'Details';
+// const SIGNIN = 'SignIn';
+// const SIGNUP = 'SignUp';
+// const VERIFY = 'Verify';
+// const RESEND = 'Resend';
+// const INITIAL = 'Initial';
+// const ADD_RIDE = 'AddRide';
+// const FINISH_RIDE = 'FinishRide';
+// const VIEW_RIDES = 'ViewRides';
 
-export default class Screens {
-  static get HOME() {
-    return HOME;
-  }
+export const Screens = Object.freeze({
+  HOME: 'Home',
+  SIGNIN: 'SignIn',
+  SIGNUP: 'SignUp',
+  VERIFY: 'Verify',
+  RESEND: 'Resend',
+  INITIAL: 'Initial',
+  ADD_RIDE: 'AddRide',
+  FINISH_RIDE: 'FinishRide',
+  VIEW_RIDES: 'ViewRides',
+});
 
-  static get SIGNIN() {
-    return SIGNIN;
-  }
+// export class Screens {
+//   static get HOME() {
+//     return HOME;
+//   }
 
-  static get SIGNUP() {
-    return SIGNUP;
-  }
+//   static get SIGNIN() {
+//     return SIGNIN;
+//   }
 
-  static get VERIFY() {
-    return VERIFY;
-  }
+//   static get SIGNUP() {
+//     return SIGNUP;
+//   }
 
-  static get RESEND() {
-    return RESEND;
-  }
+//   static get VERIFY() {
+//     return VERIFY;
+//   }
 
-  static get INITIAL() {
-    return INITIAL;
-  }
+//   static get RESEND() {
+//     return RESEND;
+//   }
 
-  static get ADD_RIDE() {
-    return ADD_RIDE;
-  }
+//   static get INITIAL() {
+//     return INITIAL;
+//   }
 
-  static get FINISH_RIDE() {
-    return FINISH_RIDE;
-  }
+//   static get ADD_RIDE() {
+//     return ADD_RIDE;
+//   }
 
-  static get VIEW_RIDES() {
-    return VIEW_RIDES;
-  }
-}
+//   static get FINISH_RIDE() {
+//     return FINISH_RIDE;
+//   }
+
+//   static get VIEW_RIDES() {
+//     return VIEW_RIDES;
+//   }
+// }

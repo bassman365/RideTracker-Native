@@ -7,8 +7,7 @@ import Screens from '../../lib/screens';
 import { validEmail } from '../../lib/validation';
 import { VerifiedStates, setVerifiedAsync} from '../../lib/storage'
 
-type Props = {};
-export default class SignUpScreen extends Component<Props> {
+export default class SignUpScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
