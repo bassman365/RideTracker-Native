@@ -58,3 +58,7 @@ export const Screens = Object.freeze({
 //     return VIEW_RIDES;
 //   }
 // }
+
+export default {
+  Screens
+}
