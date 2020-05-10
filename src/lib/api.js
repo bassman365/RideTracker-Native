@@ -3,16 +3,17 @@ import {ToastAndroid} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {getTokenAsync} from './storage';
 
-export async function signIn(email, password) {
+export async function signInAsync(email, password) {
   const route = `${config.baseUrl}authenticate`;
   let success = false;
   let message = '';
   let token = '';
   try {
-    let response = await fetch(route, {
+    const response = await fetch(route, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
+        // eslint-disable-next-line prettier/prettier
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -29,26 +30,24 @@ export async function signIn(email, password) {
         message = responseJson.message;
       }
     } else {
-      if (responseJson.message) {
-        message = responseJson.message;
-      }
+      throw new Error(response.statusText);
     }
-    return {success: success, message: message, token: token};
+    return {success, message, token};
   } catch (error) {
+    console.error(error);
     const state = await NetInfo.fetch();
     if (state.isConnected) {
-      console.info(`Connected value is: ${state.isConnected}`);
       ToastAndroid.show(
         'Looks like the something is not working on our end!  Please try again later.',
         ToastAndroid.LONG,
       );
     } else {
-      console.info(`Connected value is: ${state.isConnected}`);
       ToastAndroid.show(
         'You do not currently have a network connection.  Please connect and try again.',
         ToastAndroid.LONG,
       );
     }
+    return {success, message};
   }
 }
 
@@ -157,7 +156,7 @@ export async function renewToken(token) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return {success: success, message: message, token: token};
+    return {success, message, token};
   } catch (error) {
     const state = await NetInfo.fetch();
     if (state.isConnected) {
@@ -173,7 +172,7 @@ export async function renewToken(token) {
         ToastAndroid.LONG,
       );
     }
-    //console.error(error);
+    return {success, message};
   }
 }
 
@@ -200,9 +199,9 @@ export async function submitRideAsync(ride) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return {success: success, message: message};
+    return {success, message};
   } catch (error) {
-    return {success: success, message: message};
+    return {success, message};
   }
 }
 
@@ -229,9 +228,9 @@ export async function getRidesAsync() {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return {success: success, message: message, rides: rides};
+    return {success, message, rides};
   } catch (error) {
-    return {success: success, message: message};
+    return {success, message};
   }
 }
 

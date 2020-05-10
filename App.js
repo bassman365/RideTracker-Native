@@ -1,39 +1,25 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
+import ViewRidesScreen from './src/components/screens/viewRidesScreen';
+import SignInScreen from './src/components/screens/signInScreen';
 import SignUpScreen from './src/components/screens/signUpScreen';
-import {Button, View, Text} from 'react-native';
+import InitialScreen from './src/components/screens/initialScreen';
+import HomeScreen from './src/components/screens/homeScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Screens} from './src/lib/screens';
-
-function HomeScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Signup"
-        onPress={() => navigation.navigate(Screens.SIGNUP)}
-      />
-    </View>
-  );
-}
-
-// function DetailsScreen() {
-//   return (
-//     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-//       <Text>Details Screen</Text>
-//     </View>
-//   );
-// }
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator initialRouteName={Screens.INITIAL} headerMode="none">
+        <Stack.Screen name={Screens.INITIAL} component={InitialScreen} />
+        <Stack.Screen name={Screens.HOME} component={HomeScreen} />
+        <Stack.Screen name={Screens.SIGNIN} component={SignInScreen} />
         <Stack.Screen name={Screens.SIGNUP} component={SignUpScreen} />
+        <Stack.Screen name={Screens.VIEW_RIDES} component={ViewRidesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

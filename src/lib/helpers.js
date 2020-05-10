@@ -7,7 +7,7 @@ import {
   setProgramCollectionsAsync,
 } from './storage';
 import {getProgramCollectionsAsync, renewToken} from './api';
-import Screens from './screens';
+import {Screens} from './screens';
 import moment from 'moment';
 
 export async function isTokenExpired() {
@@ -57,7 +57,7 @@ export async function refreshTokenAsync() {
   }
 }
 
-export async function refreshProgramCollections() {
+export async function refreshProgramCollectionsAsync() {
   let success = false;
   try {
     const response = await getProgramCollectionsAsync();
@@ -72,10 +72,12 @@ export async function refreshProgramCollections() {
   }
 }
 
-export async function getStartScreen() {
+export async function getStartScreenAsync() {
   try {
     const verified = await getVerifiedAsync();
     const isExpired = await isTokenExpired();
+
+    console.info(`verified: ${verified} isExpired: ${isExpired}`);
     switch (verified) {
       case VerifiedStates.Unverifed:
         return Screens.SIGNIN;
@@ -93,7 +95,7 @@ export async function getStartScreen() {
         return Screens.SIGNIN;
     }
   } catch (error) {
-    //TODO handle error
+    return Screens.HOME;
   }
 }
 
