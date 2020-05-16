@@ -89,12 +89,16 @@ export default function ViewRidesScreen({navigation}) {
   }
 
   useEffect(() => {
+    let isSubscribed = true;
     async function loadAsync() {
       const ridesResponse = await checkForRidesAsync();
-      setRides(ridesResponse);
+      if (isSubscribed) {
+        setRides(ridesResponse);
+      }
     }
 
     loadAsync();
+    return () => (isSubscribed = false);
   });
 
   return (
