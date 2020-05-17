@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
-// import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Slider from '@react-native-community/slider';
 import {Picker} from '@react-native-community/picker';
 import {styles} from '../../lib/styles';
@@ -21,43 +21,52 @@ import {Hoshi} from 'react-native-textinput-effects';
 
 export default function AddRideScreen({navigation}) {
   const [weight, setWeight] = useState(0.0);
-  const [defaultLevel, setDefaultLevel] = useState(2);
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(2);
   const [program, setProgram] = useState('');
-  const [date, setDate] = useState({
-    datetime: '',
-    displayDate: '',
-    displayTime: '',
-  });
+  // const [date, setDate] = useState({
+  //   datetime: new Date(),
+  //   displayDate: '',
+  //   displayTime: '',
+  // });
+  const [date, setDate] = useState(new Date());
   const [programs, setPrograms] = useState([]);
-  const [showTimePicker, setShowTimePicker] = useState([]);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [dateTimePickerMode, setDateTimePickerMode] = useState([]);
-  const [initialized, setInitialized] = useState(false);
 
-  const setDates = dateValue => {
-    const tempDate = {
-      datetime: dateValue,
-      displayDate: getDisplayDate(dateValue),
-      displayTime: getDisplayTime(dateValue),
-    };
-    setDate(tempDate);
+  // const setDates = dateValue => {
+  //   const tempDate = {
+  //     datetime: dateValue,
+  //     displayDate: getDisplayDate(dateValue),
+  //     displayTime: getDisplayTime(dateValue),
+  //   };
+  //   setDate(tempDate);
+  // };
+
+  const onDateTimeChange = (event, newDate) => {
+    const currentDate = newDate || date;
+    setShowTimePicker(false);
+    setDate(currentDate);
   };
 
-  const setDateTime = (event, newDate) => {
-    if (newDate !== undefined) {
-      // Use the hour and minute from the date object
-      setShowTimePicker(false);
-      if (dateTimePickerMode === 'time') {
-        let updatedTime = updateHour(newDate.datetime, newDate.getHours());
-        updatedTime = updateMinute(updatedTime, newDate.getMinutes());
-        setDates(updatedTime);
-      }
+  // const setDateTime = (event, newDate) => {
+  //   if (newDate !== undefined) {
+  //     // Use the hour and minute from the date object
+  //     setShowTimePicker(false);
+  //     // if (dateTimePickerMode === 'time') {
+  //     //   let updatedTime = updateHour(newDate.datetime, newDate.getHours());
+  //     //   updatedTime = updateMinute(updatedTime, newDate.getMinutes());
+  //     //   setDates(updatedTime);
+  //     // }
 
-      if (dateTimePickerMode === 'date') {
-        setDates(updateDate(newDate));
-      }
-    }
-  };
+  //     // if (dateTimePickerMode === 'date') {
+  //     //   setDates(updateDate(newDate));
+  //     // }
+  //     let updatedTime = updateDate(newDate);
+  //     updatedTime = updateHour(newDate.datetime, newDate.getHours());
+  //     updatedTime = updateMinute(updatedTime, newDate.getMinutes());
+  //     setDates(updatedTime);
+  //   }
+  // };
 
   const startRide = () => {
     const ride = {
@@ -75,8 +84,6 @@ export default function AddRideScreen({navigation}) {
 
   useEffect(() => {
     async function loadAsync() {
-      // if (!initialized) {
-      // setDates(Date.now());
       const programCollections = await getCachedProgramCollectionsAsync();
       if (programCollections && programCollections.length > 0) {
         const cachedPrograms = programCollections[0].programs //only one collection is currently supported
@@ -97,9 +104,6 @@ export default function AddRideScreen({navigation}) {
           setProgram(cachedPrograms[0]);
         }
       }
-      // setInitialized(true);
-      setDates(Date.now());
-      // }
     }
 
     loadAsync();
@@ -127,7 +131,7 @@ export default function AddRideScreen({navigation}) {
                 setShowTimePicker(true);
               }}
               style={styles.dateText}>
-              {date.displayDate}
+              {getDisplayDate(date)}
             </Text>
             <Text
               onPress={() => {
@@ -135,8 +139,15 @@ export default function AddRideScreen({navigation}) {
                 setShowTimePicker(true);
               }}
               style={styles.dateText}>
-              {date.displayTime}
+              {getDisplayTime(date)}
             </Text>
+            {showTimePicker && (
+              <DateTimePicker
+                mode={dateTimePickerMode}
+                value={date}
+                onChange={onDateTimeChange}
+              />
+            )}
           </View>
 
           <View style={{flex: 0.1}} />
@@ -182,7 +193,7 @@ export default function AddRideScreen({navigation}) {
               onValueChange={val => setLevel(val)}
               step={1}
               style={{flex: 0.8, borderWidth: 0, height: 40}}
-              value={defaultLevel}
+              value={level}
             />
           </View>
 
