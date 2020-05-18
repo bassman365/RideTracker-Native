@@ -6,13 +6,7 @@ import Slider from '@react-native-community/slider';
 import {Picker} from '@react-native-community/picker';
 import {styles} from '../../lib/styles';
 import {Screens} from '../../lib/screens';
-import {
-  getDisplayDate,
-  getDisplayTime,
-  updateHour,
-  updateMinute,
-  updateDate,
-} from '../../lib/helpers';
+import {getDisplayDate, getDisplayTime} from '../../lib/helpers';
 import {
   addInProgressRideAsync,
   getCachedProgramCollectionsAsync,
@@ -23,57 +17,24 @@ export default function AddRideScreen({navigation}) {
   const [weight, setWeight] = useState(0.0);
   const [level, setLevel] = useState(2);
   const [program, setProgram] = useState('');
-  // const [date, setDate] = useState({
-  //   datetime: new Date(),
-  //   displayDate: '',
-  //   displayTime: '',
-  // });
   const [date, setDate] = useState(new Date());
   const [programs, setPrograms] = useState([]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [dateTimePickerMode, setDateTimePickerMode] = useState([]);
 
-  // const setDates = dateValue => {
-  //   const tempDate = {
-  //     datetime: dateValue,
-  //     displayDate: getDisplayDate(dateValue),
-  //     displayTime: getDisplayTime(dateValue),
-  //   };
-  //   setDate(tempDate);
-  // };
-
   const onDateTimeChange = (event, newDate) => {
-    const currentDate = newDate || date;
-    setShowTimePicker(false);
-    setDate(currentDate);
+    if (newDate) {
+      setShowTimePicker(false);
+      setDate(newDate);
+    }
   };
-
-  // const setDateTime = (event, newDate) => {
-  //   if (newDate !== undefined) {
-  //     // Use the hour and minute from the date object
-  //     setShowTimePicker(false);
-  //     // if (dateTimePickerMode === 'time') {
-  //     //   let updatedTime = updateHour(newDate.datetime, newDate.getHours());
-  //     //   updatedTime = updateMinute(updatedTime, newDate.getMinutes());
-  //     //   setDates(updatedTime);
-  //     // }
-
-  //     // if (dateTimePickerMode === 'date') {
-  //     //   setDates(updateDate(newDate));
-  //     // }
-  //     let updatedTime = updateDate(newDate);
-  //     updatedTime = updateHour(newDate.datetime, newDate.getHours());
-  //     updatedTime = updateMinute(updatedTime, newDate.getMinutes());
-  //     setDates(updatedTime);
-  //   }
-  // };
 
   const startRide = () => {
     const ride = {
       weight: weight,
       program: program,
       level: level,
-      datetime: date.datetime,
+      datetime: date,
     };
 
     addInProgressRideAsync(ride).then(() => {

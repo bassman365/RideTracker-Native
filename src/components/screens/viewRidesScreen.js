@@ -81,8 +81,10 @@ export default function ViewRidesScreen({navigation}) {
           }
         });
       }
-
-      return fetchedRides;
+      const sortedRides = fetchedRides.sort(
+        (a, b) => new Date(b.date) - new Date(a.date),
+      );
+      return sortedRides;
     } catch (error) {
       console.error(error);
     }
