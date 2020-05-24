@@ -82,18 +82,6 @@ export default function FinishRideScreen({navigation}) {
     });
   };
 
-  const updateDurationMinutes = minutes => {
-    setDuration(prevState => {
-      return {...prevState, minutes};
-    });
-  };
-
-  const updateDurationHours = hours => {
-    setDuration(prevState => {
-      return {...prevState, hours};
-    });
-  };
-
   async function handleSubmitRide(ride) {
     try {
       //attempt to send to api
@@ -148,7 +136,9 @@ export default function FinishRideScreen({navigation}) {
           <Text style={{paddingLeft: 8}}>Hours</Text>
           <Picker
             onValueChange={(itemValue, itemIndex) =>
-              updateDurationHours(itemValue)
+              setDuration(prevState => {
+                return {...prevState, itemValue};
+              })
             }
             selectedValue={duration.hours}>
             {hoursPickerItems}
@@ -159,7 +149,9 @@ export default function FinishRideScreen({navigation}) {
           <Text style={{paddingLeft: 8}}>Minutes</Text>
           <Picker
             onValueChange={(itemValue, itemIndex) =>
-              updateDurationMinutes(itemValue)
+              setDuration(prevState => {
+                return {...prevState, itemValue};
+              })
             }
             selectedValue={duration.minutes}>
             {minutesPickerItems}

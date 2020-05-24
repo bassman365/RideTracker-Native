@@ -104,10 +104,18 @@ export default function SignUpScreen({navigation}) {
         style={{flex: 2, flexDirection: 'column', justifyContent: 'center'}}>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <TouchableOpacity
-            disabled={emailError || passwordError}
+            disabled={
+              emailError ||
+              passwordError ||
+              emailText.length === 0 ||
+              passwordText.length === 0
+            }
             onPress={() => onSignUp(emailText, passwordText, navigation)}
             style={
-              emailError || passwordError
+              emailError ||
+              passwordError ||
+              emailText.length === 0 ||
+              passwordText.length === 0
                 ? styles.disabledButton
                 : styles.button
             }

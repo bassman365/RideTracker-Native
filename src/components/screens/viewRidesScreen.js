@@ -81,10 +81,11 @@ export default function ViewRidesScreen({navigation}) {
           }
         });
       }
-      const sortedRides = fetchedRides.sort(
-        (a, b) => new Date(b.date) - new Date(a.date),
-      );
-      return sortedRides;
+
+      // const sortedRides = fetchedRides.sort(
+      //   (a, b) => new Date(a.date) - new Date(b.date),
+      // );
+      return fetchedRides;
     } catch (error) {
       console.error(error);
     }
