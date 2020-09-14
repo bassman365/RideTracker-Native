@@ -1,49 +1,53 @@
 import config from '../../config';
-import { NetInfo, ToastAndroid } from 'react-native';
-import { getTokenAsync } from './storage';
+import {ToastAndroid} from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+import {getTokenAsync} from './storage';
 
-export async function signIn(email, password) {
+export async function signInAsync(email, password) {
+  const route = `${config.baseUrl}authenticate`;
   let success = false;
   let message = '';
   let token = '';
-  const route = `${config.baseUrl}authenticate`;
   try {
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    const response = await fetch(route, {
       method: 'POST',
       headers: {
+        // eslint-disable-next-line prettier/prettier
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         email: email,
         password: password,
-        isMobile: true
+        isMobile: true,
       }),
     });
-    const responseJson = await response.json();
     if (response.ok) {
       success = true;
+      const responseJson = await response.json();
       token = responseJson.token;
+      if (responseJson.message) {
+        message = responseJson.message;
+      }
+    } else {
+      throw new Error(response.statusText);
     }
-    if (responseJson.message) {
-      message = responseJson.message;
-    }
-    return { success: success, message: message, token: token };
+    return {success, message, token};
   } catch (error) {
-    const connected = await NetInfo.isConnected.fetch();
-    if (connected) {
-      console.info(`Connected value is: ${connected}`);
+    console.error(error);
+    const state = await NetInfo.fetch();
+    if (state.isConnected) {
       ToastAndroid.show(
         'Looks like the something is not working on our end!  Please try again later.',
-        ToastAndroid.LONG
+        ToastAndroid.LONG,
       );
     } else {
-      console.info(`Connected value is: ${connected}`);
       ToastAndroid.show(
         'You do not currently have a network connection.  Please connect and try again.',
-        ToastAndroid.LONG
+        ToastAndroid.LONG,
       );
     }
+    return {success, message};
   }
 }
 
@@ -52,16 +56,16 @@ export async function signUp(email, password) {
   let message = '';
   const route = `${config.baseUrl}users/signup`;
   try {
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         email: email,
         password: password,
-        isMobile: true
+        isMobile: true,
       }),
     });
     const responseJson = await response.json();
@@ -71,18 +75,18 @@ export async function signUp(email, password) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message };
+    return {success: success, message: message};
   } catch (error) {
     console.error(error);
   }
 }
 
 export async function verifyEmail(verificationCode) {
-  const route = `${config.baseUrl}users/confirmation/${verificationCode}`
+  const route = `${config.baseUrl}users/confirmation/${verificationCode}`;
   let success = false;
   let message = '';
   try {
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -96,26 +100,26 @@ export async function verifyEmail(verificationCode) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message };
+    return {success: success, message: message};
   } catch (error) {
     console.error(error);
   }
 }
 
 export async function resendVerificationCode(email) {
-  const route = `${config.baseUrl}users/resend`
+  const route = `${config.baseUrl}users/resend`;
   let success = false;
   let message = '';
   try {
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         email: email,
-        isMobile: true
+        isMobile: true,
       }),
     });
     const responseJson = await response.json();
@@ -125,7 +129,7 @@ export async function resendVerificationCode(email) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message };
+    return {success: success, message: message};
   } catch (error) {
     console.error(error);
   }
@@ -136,12 +140,12 @@ export async function renewToken(token) {
   let message = '';
   const route = `${config.baseUrl}authenticate/renew`;
   try {
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token
+        'x-access-token': token,
       },
     });
     const responseJson = await response.json();
@@ -152,23 +156,23 @@ export async function renewToken(token) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message, token: token };
+    return {success, message, token};
   } catch (error) {
-    const connected = await NetInfo.isConnected.fetch();
-    if (connected) {
-      console.info(`Connected value is: ${connected}`);
+    const state = await NetInfo.fetch();
+    if (state.isConnected) {
+      console.info(`Connected value is: ${state.isConnected}`);
       ToastAndroid.show(
         'Looks like the something is not working on our end!  Please try again later.',
-        ToastAndroid.LONG
+        ToastAndroid.LONG,
       );
     } else {
-      console.info(`Connected value is: ${connected}`);
+      console.info(`Connected value is: ${state.isConnected}`);
       ToastAndroid.show(
         'You do not currently have a network connection.  Please connect and try again.',
-        ToastAndroid.LONG
+        ToastAndroid.LONG,
       );
     }
-    //console.error(error);
+    return {success, message};
   }
 }
 
@@ -179,12 +183,12 @@ export async function submitRideAsync(ride) {
 
   try {
     const token = await getTokenAsync();
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token
+        'x-access-token': token,
       },
       body: JSON.stringify(ride),
     });
@@ -195,9 +199,9 @@ export async function submitRideAsync(ride) {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message };
+    return {success, message};
   } catch (error) {
-    return { success: success, message: message};
+    return {success, message};
   }
 }
 
@@ -208,12 +212,12 @@ export async function getRidesAsync() {
   const route = `${config.baseUrl}rides`;
   try {
     const token = await getTokenAsync();
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token
+        'x-access-token': token,
       },
     });
     const responseJson = await response.json();
@@ -224,9 +228,9 @@ export async function getRidesAsync() {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message, rides: rides };
+    return {success, message, rides};
   } catch (error) {
-    return { success: success, message: message};
+    return {success, message};
   }
 }
 
@@ -237,12 +241,12 @@ export async function getProgramCollectionsAsync() {
   const route = `${config.baseUrl}programCollections`;
   try {
     const token = await getTokenAsync();
-    let response = await fetch(route, { //eslint-disable-line no-undef
+    let response = await fetch(route, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-access-token': token
+        'x-access-token': token,
       },
     });
     const responseJson = await response.json();
@@ -253,8 +257,12 @@ export async function getProgramCollectionsAsync() {
     if (responseJson.message) {
       message = responseJson.message;
     }
-    return { success: success, message: message, programCollections: programCollections };
+    return {
+      success: success,
+      message: message,
+      programCollections: programCollections,
+    };
   } catch (error) {
-    return { success: success, message: message};
+    return {success: success, message: message};
   }
 }

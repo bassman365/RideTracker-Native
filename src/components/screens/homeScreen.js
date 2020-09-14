@@ -1,60 +1,65 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, View, Text } from 'react-native';
-import { getInProgressRidesAsync } from '../../lib/storage';
-import Screens from '../../lib/screens';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect} from 'react';
+import {Button, View} from 'react-native';
+import {getInProgressRidesAsync} from '../../lib/storage';
+import {Screens} from '../../lib/screens';
 
-type Props = {};
-export default class HomeScreen extends Component<Props> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inProgressRidesExist: false,
+export default function SignInScreen({navigation}) {
+  const [inProgressRidesExist, setinProgressRidesExist] = useState(false);
+  const [loadingInProgressRides, setloadingInProgressRides] = useState(true);
+
+  async function checkForRidesAsync() {
+    setloadingInProgressRides(true);
+    try {
+      const rides = await getInProgressRidesAsync();
+      if (rides && rides.length > 0) {
+        setinProgressRidesExist(true);
+      } else {
+        setinProgressRidesExist(false);
+      }
+    } catch {
+      console.error('failed to get in progress rides');
+    } finally {
+      setloadingInProgressRides(false);
     }
   }
 
-  componentWillMount() {
-    getInProgressRidesAsync().then((rides) => {
-      if (rides && rides.length > 0) {
-        this.setState({ inProgressRidesExist: true }); //eslint-disable-line  react/no-set-state
-      }
+  useEffect(() => {
+    async function loadAsync() {
+      await checkForRidesAsync();
+    }
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadAsync();
     });
-  }
 
-  componentDidMount() {
-    console.info('home did mount');
-  }
+    return unsubscribe;
+  }, [navigation]);
 
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{flex: 0.1}} />
+      <Button
+        onPress={() => navigation.navigate('SignIn')}
+        title="Go to Sign In"
+      />
+      <View style={{flex: 0.1}} />
+      {!loadingInProgressRides && (
+        <Button
+          onPress={() =>
+            inProgressRidesExist
+              ? navigation.navigate(Screens.FINISH_RIDE)
+              : navigation.navigate(Screens.ADD_RIDE)
+          }
+          title={inProgressRidesExist ? 'Finish your ride!' : 'Add a ride!'}
+        />
+      )}
 
-        <View style={{ flex: 0.1 }} />
-        <Button
-          onPress={() => this.props.navigation.navigate('SignIn')}
-          title="Go to Sign In"
-        />
-        <View style={{ flex: 0.1 }} />
-        <Button
-          onPress={() => this.state.inProgressRidesExist ?
-            this.props.navigation.navigate(Screens.FINISH_RIDE) :
-            this.props.navigation.navigate(Screens.ADD_RIDE)}
-          title={this.state.inProgressRidesExist ?
-            "Finish your ride!" :
-            "Add a ride!"}
-        />
-        <View style={{ flex: 0.1 }} />
-        <Button
-          onPress={() => this.props.navigation.navigate(Screens.VIEW_RIDES)}
-          title="View Your Rides!"
-        />
-      </View>
-    );
-  }
+      <View style={{flex: 0.1}} />
+      <Button
+        onPress={() => navigation.navigate(Screens.VIEW_RIDES)}
+        title="View Your Rides!"
+      />
+    </View>
+  );
 }
-
-HomeScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func
-  }).isRequired
-};

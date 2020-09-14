@@ -4,10 +4,10 @@ import {
   setTokenAsync,
   getVerifiedAsync,
   VerifiedStates,
-  setProgramCollectionsAsync
+  setProgramCollectionsAsync,
 } from './storage';
-import { getProgramCollectionsAsync, renewToken } from './api';
-import Screens from './screens';
+import {getProgramCollectionsAsync, renewToken} from './api';
+import {Screens} from './screens';
 import moment from 'moment';
 
 export async function isTokenExpired() {
@@ -23,13 +23,14 @@ export async function isTokenExpired() {
     const date = new Date(0);
     date.setUTCSeconds(decoded.exp);
 
-    const currentDate = Math.floor((Date.now().valueOf()));
+    const currentDate = Math.floor(Date.now().valueOf());
     const adjustedTime = currentDate + offsetSeconds * 1000;
     const isExpired = date.valueOf() < adjustedTime;
-    console.info(`exp time: ${date.valueOf()} and current time: ${adjustedTime}`);
+    console.info(
+      `exp time: ${date.valueOf()} and current time: ${adjustedTime}`,
+    );
     console.info(`isExpired: ${isExpired}`);
     return isExpired;
-
   } catch (error) {
     console.error(error);
   }
@@ -41,7 +42,7 @@ export async function refreshTokenAsync() {
     const currentToken = await getTokenAsync();
 
     if (!currentToken) {
-      return { success: success };
+      return {success: success};
     } else {
       const renewResponse = await renewToken(currentToken);
       if (renewResponse.success) {
@@ -49,14 +50,14 @@ export async function refreshTokenAsync() {
         success = true;
         console.info('refresh token success');
       }
-      return { success: success };
+      return {success: success};
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-export async function refreshProgramCollections() {
+export async function refreshProgramCollectionsAsync() {
   let success = false;
   try {
     const response = await getProgramCollectionsAsync();
@@ -64,35 +65,37 @@ export async function refreshProgramCollections() {
       await setProgramCollectionsAsync(response.programCollections);
       success = true;
     }
-    return { success: success };
+    return {success: success};
   } catch (error) {
     console.error(error);
-    return { success: success };
+    return {success: success};
   }
 }
 
-export async function getStartScreen() {
+export async function getStartScreenAsync() {
   try {
     const verified = await getVerifiedAsync();
     const isExpired = await isTokenExpired();
+
+    console.info(`verified: ${verified} isExpired: ${isExpired}`);
     switch (verified) {
-    case VerifiedStates.Unverifed:
-      return Screens.SIGNIN;
-    case VerifiedStates.PendingVerification:
-      return Screens.VERIFY;
-    case VerifiedStates.Verified:
-      if (!isExpired) {
-        console.info("I'm going home!");
-        return Screens.HOME;
-      } else {
-        console.info("I'm returning signin");
+      case VerifiedStates.Unverifed:
         return Screens.SIGNIN;
-      }
-    default:
-      return Screens.SIGNIN;
+      case VerifiedStates.PendingVerification:
+        return Screens.VERIFY;
+      case VerifiedStates.Verified:
+        if (!isExpired) {
+          console.info("I'm going home!");
+          return Screens.HOME;
+        } else {
+          console.info("I'm returning signin");
+          return Screens.SIGNIN;
+        }
+      default:
+        return Screens.SIGNIN;
     }
   } catch (error) {
-    //TODO handle error
+    return Screens.HOME;
   }
 }
 
@@ -108,18 +111,26 @@ export function getDisplayTime(dateString) {
   return moment(dateString).format('h:mm a');
 }
 
-export function updateYear(dateString, minute) {
-  const updatedDate = moment(dateString).set('year', minute);
+export function updateYear(dateString, year) {
+  const updatedDate = moment(dateString).set('year', year);
   return new Date(updatedDate).valueOf();
 }
 
-export function updateMonth(dateString, minute) {
-  const updatedDate = moment(dateString).set('month', minute);
+export function updateMonth(dateString, month) {
+  const updatedDate = moment(dateString).set('month', month);
   return new Date(updatedDate).valueOf();
 }
 
-export function updateDay(dateString, minute) {
-  const updatedDate = moment(dateString).set('day', minute);
+export function updateDay(dateString, day) {
+  const updatedDate = moment(dateString).set('day', day);
+  return new Date(updatedDate).valueOf();
+}
+
+export function updateDate(date) {
+  const updatedDate = moment()
+    .year(date.getFullYear())
+    .month(date.getMonth())
+    .date(date.getDate());
   return new Date(updatedDate).valueOf();
 }
 
@@ -138,12 +149,12 @@ export function getElapsedTime(startTime) {
   return {
     hours: duration.get('hours'),
     minutes: duration.get('minutes'),
-    seconds: duration.get('seconds')
-  }
+    seconds: duration.get('seconds'),
+  };
 }
 
 export function getSecondsFromTime(time) {
-  return (time.hours * 60 * 60) + (time.minutes * 60) + time.seconds;
+  return time.hours * 60 * 60 + time.minutes * 60 + time.seconds;
 }
 
 export function getDisplayTimeFromSeconds(seconds) {
@@ -152,8 +163,8 @@ export function getDisplayTimeFromSeconds(seconds) {
   const span = {
     hours: duration.get('hours'),
     minutes: duration.get('minutes'),
-    seconds: duration.get('seconds')
-  }
+    seconds: duration.get('seconds'),
+  };
 
   const hoursDisplay = span.hours > 0 ? ` ${span.hours} Hours` : '';
   const minutesDisplay = span.minutes > 0 ? ` ${span.minutes} Minutes` : '';

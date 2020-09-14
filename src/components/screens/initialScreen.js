@@ -1,42 +1,63 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation'
-import { getStartScreen, refreshProgramCollections, refreshTokenAsync } from '../../lib/helpers';
+import {useState, useEffect} from 'react';
+import {StackActions} from '@react-navigation/native';
+import {
+  getStartScreenAsync,
+  refreshProgramCollectionsAsync,
+  refreshTokenAsync,
+} from '../../lib/helpers';
+import {submitRideAsync} from '../../lib/api';
+import {
+  getTokenAsync,
+  getCompletedRidesAsync,
+  removeCompletedRideAsync,
+} from '../../lib/storage';
+import {Screens} from '../../lib/screens';
 
-type Props = {};
-export default class InitialScreen extends Component<Props> {
-  constructor(props) {
-    super(props);
+export default function InitialScreen({navigation}) {
+  const [hasBeenInitialized, setHasBeenInitialized] = useState(false);
+
+  async function submitAndRemoveAsync(ride) {
+    const response = await submitRideAsync(ride);
+    if (response.success) {
+      await removeCompletedRideAsync(ride.datetime);
+    }
   }
 
-  componentWillMount() {
-    //TODO use promise all here
-    refreshTokenAsync().then((response) => {
-      const sucessful = response.success ? 'was' : 'was not';
-      console.info(`refreshing token ${sucessful} successful`);
-    });
+  useEffect(() => {
+    async function loadAsync() {
+      let screenName = Screens.SIGNIN;
+      try {
+        const attemptCompletedRidesSaveAsync = async () => {
+          const completedRides = await getCompletedRidesAsync();
 
-    refreshProgramCollections().then((response) => {
-      const sucessful = response.success ? 'was' : 'was not';
-      console.info(`refreshing programCollections ${sucessful} successful`);
-    });
+          if (completedRides && completedRides.length > 0) {
+            await Promise.all(
+              completedRides.map(ride => submitAndRemoveAsync(ride)),
+            );
+          }
+        };
 
-    getStartScreen().then((screenName) => {
-      console.info(`default screen is ${screenName}`);
-      this.props.navigation.dispatch(NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: screenName })]
-      }));
-    });
-  }
+        const token = await getTokenAsync();
+        if (token) {
+          await Promise.all([
+            refreshTokenAsync(),
+            refreshProgramCollectionsAsync(),
+            attemptCompletedRidesSaveAsync(),
+          ]);
+        }
+        screenName = await getStartScreenAsync();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setHasBeenInitialized(true);
+        navigation.dispatch(StackActions.replace(screenName));
+      }
+    }
 
-  render() {
-    return null;
-  }
+    if (!hasBeenInitialized) {
+      loadAsync();
+    }
+  }, [hasBeenInitialized, navigation]);
+
+  return null;
 }
-
-InitialScreen.propTypes = {
-  navigation: PropTypes.shape({
-    dispatch: PropTypes.func
-  }).isRequired
-};
